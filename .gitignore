@@ -1,4 +1,2 @@
 node_modules/
 .env
-recetas/recetas_raw.json
-recetas/recetas_procesadas.json
