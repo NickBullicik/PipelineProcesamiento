@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= receta.titulo %> | Recetario Universal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --naranja: #E8621A;
+            --naranja-claro: #FFF3EC;
+            --gris-oscuro: #1A1A1A;
+            --gris-medio: #6B6B6B;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FAFAFA;
+            color: var(--gris-oscuro);
+        }
+
+        /* NAVBAR */
+        .navbar-top {
+            background: var(--gris-oscuro);
+            padding: 14px 0;
+        }
+
+        .navbar-top a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .navbar-top a:hover { color: white; }
+
+        .navbar-top .brand {
+            color: white;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+        }
+
+        .navbar-top .brand span { color: var(--naranja); }
+
+        /* IMAGEN HERO */
+        .receta-hero {
+            width: 100%;
+            height: 380px;
+            object-fit: cover;
+            border-radius: 0 0 24px 24px;
+        }
+
+        /* BADGES */
+        .robot-badge-lg {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--naranja-claro);
+            color: var(--naranja);
+            border-radius: 30px;
+            padding: 6px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .receta-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.4rem;
+            line-height: 1.2;
+            margin: 16px 0 8px;
+        }
+
+        .meta-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #F0F0F0;
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 0.85rem;
+            color: var(--gris-medio);
+        }
+
+        /* COLUMNA LATERAL */
+        .card-lateral {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            margin-bottom: 20px;
+        }
+
+        .card-lateral h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--naranja-claro);
+        }
+
+        /* INGREDIENTES */
+        .ingrediente-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #F0F0F0;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .ingrediente-item:last-child { border-bottom: none; }
+
+        .ingrediente-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--naranja);
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        /* TABLA NUTRICIONAL */
+        /* Cuatro cajas en fila, cada una con su métrica */
+        .nutricion-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .nutricion-box {
+            background: #FAFAFA;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #F0F0F0;
+        }
+
+        .nutricion-box .valor {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--naranja);
+            line-height: 1;
+        }
+
+        .nutricion-box .unidad {
+            font-size: 0.75rem;
+            color: var(--gris-medio);
+            margin-top: 2px;
+        }
+
+        .nutricion-box .etiqueta {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--gris-oscuro);
+            margin-top: 4px;
+        }
+
+        /* ALÉRGENOS */
+        .alergeno {
+            display: inline-block;
+            border-radius: 10px;
+            padding: 4px 10px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin: 3px 2px;
+        }
+
+        .alergeno-Gluten       { background: #FFF3CD; color: #856404; }
+        .alergeno-Lactosa      { background: #D1ECF1; color: #0C5460; }
+        .alergeno-Huevo        { background: #FDE8D8; color: #7B3F00; }
+        .alergeno-Frutos-Secos { background: #D4EDDA; color: #155724; }
+        .alergeno-Marisco      { background: #E8D5F5; color: #5B2C6F; }
+        .alergeno-Pescado      { background: #D6EAF8; color: #1A5276; }
+        .alergeno-Soja         { background: #FDFEFE; color: #555; border: 1px solid #ddd; }
+        .alergeno-default      { background: #F0F0F0; color: #555; }
+
+        /* TABS DE ROBOTS */
+        .robots-tabs-wrapper {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        }
+
+        .robots-tabs-wrapper h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+
+        .nav-tabs {
+            border-bottom: 2px solid #F0F0F0;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tabs .nav-link {
+            color: var(--gris-medio);
+            border: none;
+            border-radius: 8px 8px 0 0;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--naranja);
+            background: var(--naranja-claro);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--naranja);
+            background: var(--naranja-claro);
+            border-bottom: 2px solid var(--naranja);
+            font-weight: 600;
+        }
+
+        /* PASOS */
+        .paso-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #F7F7F7;
+        }
+
+        .paso-item:last-child { border-bottom: none; }
+
+        .paso-numero {
+            width: 32px;
+            height: 32px;
+            background: var(--naranja);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .paso-texto {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--gris-oscuro);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar-top">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a href="/" class="brand">Pipeline <span>Procesamiento</span></a>
+            <a href="/">← Volver al listado</a>
+        </div>
+    </div>
+
+    <!-- IMAGEN PRINCIPAL -->
+    <% if (receta.imagen) { %>
+        <img
+            src="<%= receta.imagen %>"
+            class="receta-hero"
+            alt="<%= receta.titulo %>"
+            onerror="this.style.display='none'"
+        >
+    <% } %>
+
+    <!-- CONTENIDO -->
+    <div class="container py-4 pb-5">
+
+        <!-- TÍTULO E INFO -->
+        <div class="mb-4">
+            <span class="robot-badge-lg">🤖 <%= receta.robotOriginal %></span>
+            <h1 class="receta-titulo"><%= receta.titulo %></h1>
+
+            <div class="d-flex flex-wrap gap-2 mt-3">
+                <% if (receta.tiempoTotal) { %>
+                    <span class="meta-pill">⏱ <%= receta.tiempoTotal %></span>
+                <% } %>
+                <% if (receta.porciones) { %>
+                    <span class="meta-pill">🍽 <%= receta.porciones %></span>
+                <% } %>
+                <% if (receta.ingredientes && receta.ingredientes.length > 0) { %>
+                    <span class="meta-pill">📋 <%= receta.ingredientes.length %> ingredientes</span>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- ── COLUMNA IZQUIERDA ── -->
+            <div class="col-md-4">
+
+                <!-- INGREDIENTES -->
+                <div class="card-lateral">
+                    <h4>Ingredientes</h4>
+                    <% if (receta.ingredientes && receta.ingredientes.length > 0) { %>
+                        <% receta.ingredientes.forEach(ing => { %>
+                            <div class="ingrediente-item">
+                                <div class="ingrediente-dot"></div>
+                                <span><%= ing %></span>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p class="text-muted">No se encontraron ingredientes.</p>
+                    <% } %>
+                </div>
+
+                <!-- TABLA NUTRICIONAL -->
+                <% if (receta.nutricion) { %>
+                    <div class="card-lateral">
+                        <h4>Nutrición por ración</h4>
+                        <div class="nutricion-grid">
+                            <div class="nutricion-box">
+                                <div class="valor"><%= receta.nutricion.calorias %></div>
+                                <div class="unidad">kcal</div>
+                                <div class="etiqueta">Calorías</div>
+                            </div>
+                            <div class="nutricion-box">
+                                <div class="valor"><%= receta.nutricion.proteinas %></div>
+                                <div class="unidad">gramos</div>
+                                <div class="etiqueta">Proteínas</div>
+                            </div>
+                            <div class="nutricion-box">
+                                <div class="valor"><%= receta.nutricion.grasas %></div>
+                                <div class="unidad">gramos</div>
+                                <div class="etiqueta">Grasas</div>
+                            </div>
+                            <div class="nutricion-box">
+                                <div class="valor"><%= receta.nutricion.hidratos %></div>
+                                <div class="unidad">gramos</div>
+                                <div class="etiqueta">Hidratos</div>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+
+                <!-- ALÉRGENOS -->
+                <% if (receta.alergenos && receta.alergenos.length > 0) { %>
+                    <div class="card-lateral">
+                        <h4>Alérgenos</h4>
+                        <% receta.alergenos.forEach(alergeno => { %>
+                            <%
+                                const claseAlergeno = alergeno.replace(/ /g, '-');
+                                const tieneClase = ['Gluten','Lactosa','Huevo','Frutos-Secos','Marisco','Pescado','Soja'].includes(claseAlergeno);
+                            %>
+                            <span class="alergeno alergeno-<%= tieneClase ? claseAlergeno : 'default' %>">
+                                ⚠️ <%= alergeno %>
+                            </span>
+                        <% }) %>
+                    </div>
+                <% } %>
+
+            </div>
+
+            <!-- ── COLUMNA DERECHA: Tabs por robot ── -->
+            <div class="col-md-8">
+                <div class="robots-tabs-wrapper">
+                    <h4>Instrucciones por robot</h4>
+
+                    <% const robots = Object.keys(receta.traducciones); %>
+
+                    <!-- TABS -->
+                    <ul class="nav nav-tabs mb-4" id="robotsTabs" role="tablist">
+                        <% robots.forEach((robot, i) => { %>
+                            <li class="nav-item" role="presentation">
+                                <button
+                                    class="nav-link <%= i === 0 ? 'active' : '' %>"
+                                    id="tab-<%= i %>"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#panel-<%= i %>"
+                                    type="button"
+                                    role="tab"
+                                >
+                                    <%= robot %>
+                                </button>
+                            </li>
+                        <% }) %>
+                    </ul>
+
+                    <!-- CONTENIDO DE CADA TAB -->
+                    <div class="tab-content">
+                        <% robots.forEach((robot, i) => { %>
+                            <div
+                                class="tab-pane fade <%= i === 0 ? 'show active' : '' %>"
+                                id="panel-<%= i %>"
+                                role="tabpanel"
+                            >
+                                <% const pasos = receta.traducciones[robot]; %>
+                                <% if (pasos && pasos.length > 0) { %>
+                                    <% pasos.forEach((paso, j) => { %>
+                                        <div class="paso-item">
+                                            <div class="paso-numero"><%= j + 1 %></div>
+                                            <div class="paso-texto"><%= paso %></div>
+                                        </div>
+                                    <% }) %>
+                                <% } else { %>
+                                    <p class="text-muted">No hay instrucciones disponibles.</p>
+                                <% } %>
+                            </div>
+                        <% }) %>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
